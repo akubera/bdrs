@@ -1,25 +1,24 @@
 version: 2.1
 #orbs:
 #  codecov: codecov/codecov@3.0.0
+
 jobs:
-  hello-world:
-    docker:
-      - image: alpine:3.7
-    steps:
-      - run:
-          name: Hello World
-          command: |
-            echo 'Hello World!'
-            echo 'This is the delivery pipeline'
   build-and-test:
+    parameters:
+      rust-version:
+        type: string
+        default: "stable"
+      debian-version:
+        type: string
+        default: "buster"
     docker:
-      - image: rust:1.54.0-buster
+      - image: rust:<< parameters.rust-version >>-<< parameters.debian-version >>
     environment:
       RUSTFLAGS: '-D warnings'
     steps:
       - checkout
       - run:
-          name: Print Rust Version
+          name: Rust Version
           command: rustc --version; cargo --version
       - run:
           name: Build
@@ -38,14 +37,17 @@ jobs:
               --security-opt seccomp=unconfined
               -v "${PWD}:/home"
               akubera/rust-codecov:1.54.0-buster
-              sh -c 'kcov-rust && upload-kcov-results-to-codecov'
+              sh -c 'cargo test -q && kcov-rust && upload-kcov-results-to-codecov'
        # - codecov/upload
 
 workflows:
   version: 2
   build-and-test:
    jobs:
-     - hello-world  
-     - build-and-test
-     - coverage
+     - build-and-test:
+         matrix:
+             parameters:
+                rust-version:
+                   - "1.53.0"
+                   - "1.54.0"
   
