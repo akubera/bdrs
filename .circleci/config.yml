@@ -1,6 +1,6 @@
 version: 2.1
-orbs:
-  codecov: codecov/codecov@1.2.3
+#orbs:
+#  codecov: codecov/codecov@3.0.0
 
 jobs:
   build-and-test:
@@ -31,4 +31,4 @@ jobs:
               -v "${PWD}:/home"
               akubera/rust-codecov:1.54.0-buster
               sh -c 'kcov-rust && upload-kcov-results-to-codecov'
-
+       # - codecov/upload
