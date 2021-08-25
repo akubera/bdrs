@@ -3,6 +3,32 @@ orbs:
   codecov: codecov/codecov@1.2.3
 
 jobs:
-  test:
+  build-and-test:
     docker:
-      - null
+      - image: rust:1.54.0-buster
+    environment:
+      RUSTFLAGS: '-D warnings'
+    steps:
+      - checkout
+      - run:
+          name: Print Rust Version
+          command: rustc --version; cargo --version
+      - run:
+          name: Build
+          command: cargo build
+      - run:
+          name: Test
+          command: cargo test
+  coverage:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Generate Coverage
+          command: >
+              docker run
+              --security-opt seccomp=unconfined
+              -v "${PWD}:/home"
+              akubera/rust-codecov:1.54.0-buster
+              sh -c 'kcov-rust && upload-kcov-results-to-codecov'
+
