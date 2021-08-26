@@ -12,7 +12,7 @@ jobs:
         type: string
         default: "buster"
     docker:
-      - image: circleci/rust:<< parameters.rust-version >>-<< parameters.debian-version >>
+      - image: cimg/rust:<< parameters.rust-version >>-<< parameters.debian-version >>
     environment:
       RUSTFLAGS: '-D warnings'
     steps:
@@ -65,7 +65,7 @@ jobs:
 
   misc:
     docker:
-      - image: circleci/rust:stable
+      - image: cimg/rust:stable
     steps:
       - checkout
       - rust/format
