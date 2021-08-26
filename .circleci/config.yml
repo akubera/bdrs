@@ -37,13 +37,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Setup CI CodeCov Environment
+          name: Echo Coverage Command
           command: >
-            ci_env=$(bash <(curl -s https://codecov.io/env))
-      - run:
-          name: Repeat CI CodeCov Environment
-          command: >
-            echo $ci_env
+            echo
+            docker run
+            --security-opt seccomp=unconfined
+            -v "${PWD}:/home"
+            -e CI=true
+            -e $(bash <(curl -s https://codecov.io/env))
+            akubera/rust-codecov:<< parameters.rust-version >>-<< parameters.debian-version >>
+            sh -c 'cargo test -q && kcov-rust && upload-kcov-results-to-codecov'
       - run:
           name: Generate Coverage
           command: >
