@@ -65,7 +65,7 @@ jobs:
 
   misc:
     docker:
-      - image: cimg/rust:stable
+      - image: cimg/rust:1.54.0
     steps:
       - checkout
       - rust/format
@@ -83,11 +83,9 @@ workflows:
         matrix:
           parameters:
             rust-version:
-            - "nightly"
-            - "beta"
-            - "stable"
             - "1.50.0"
             - "1.40.0"
+            - "1.54.0"
     - upload-coverage:
         rust-version: "1.54.0"
     - misc
