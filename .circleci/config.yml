@@ -63,6 +63,15 @@ jobs:
       - store_test_results:
           path: target/cov
 
+  misc:
+    docker:
+      - image: circleci/rust:stable
+    steps:
+      - checkout
+      - rust/format
+      - rust/clippy
+      - rust/test
+
 workflows:
   version: 2
   build-and-test:
@@ -81,9 +90,4 @@ workflows:
             - "1.40.0"
     - upload-coverage:
         rust-version: "1.54.0"
-
-  misc:
-    jobs:
-    - rust/format
-    - rust/clippy
-    - rust/test
+    - misc
