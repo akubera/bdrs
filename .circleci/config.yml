@@ -21,18 +21,16 @@ jobs:
           name: Rust Version
           command: rustc --version; cargo --version
       - restore_cache:
-        keys:
+          keys:
             - bigdecimal-cargo-{{ checksum "Cargo.lock" }}
             - bigdecimal-cargo-
       - run:
           name: Check
           command: cargo check
       - save_cache:
-        paths:
+          paths:
             - /usr/local/cargo
-        keys:
-            - bigdecimal-cargo-{{ checksum "Cargo.lock" }}
-            - bigdecimal-cargo-
+          key: bigdecimal-cargo-{{ checksum "Cargo.lock" }}
       - run:
           name: Build
           command: cargo build
