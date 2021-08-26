@@ -22,7 +22,7 @@ jobs:
           command: rustc --version; cargo --version
       - restore_cache:
           keys:
-            - bigdecimal-cargo-{{ checksum "Cargo.lock" }}
+            - bigdecimal-cargo-<< parameters.rust-version >>-{{ checksum "Cargo.toml" }}
             - bigdecimal-cargo-
       - run:
           name: Check
@@ -30,7 +30,7 @@ jobs:
       - save_cache:
           paths:
             - /usr/local/cargo
-          key: bigdecimal-cargo-{{ checksum "Cargo.lock" }}
+          key: bigdecimal-cargo-<< parameters.rust-version >>-{{ checksum "Cargo.toml" }}
       - run:
           name: Build
           command: cargo build
