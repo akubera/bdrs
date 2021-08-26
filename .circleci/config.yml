@@ -1,6 +1,6 @@
 version: 2.1
-#orbs:
-#  codecov: codecov/codecov@3.0.0
+# orbs:
+#   codecov: codecov/codecov@3.0.0
 
 jobs:
   build-and-test:
@@ -25,6 +25,7 @@ jobs:
       - run:
           name: Test
           command: cargo test
+
   upload-coverage:
     parameters:
       rust-version:
