@@ -25,8 +25,8 @@ jobs:
             - bigdecimal-cargo-{{ checksum "Cargo.lock" }}
             - bigdecimal-cargo-
       - run:
-          name: Build
-          command: cargo build
+          name: Check
+          command: cargo check
       - save_cache:
         paths:
             - /usr/local/cargo
@@ -34,9 +34,11 @@ jobs:
             - bigdecimal-cargo-{{ checksum "Cargo.lock" }}
             - bigdecimal-cargo-
       - run:
+          name: Build
+          command: cargo build
+      - run:
           name: Test
           command: cargo test
-
 
   upload-coverage:
     parameters:
@@ -72,6 +74,9 @@ jobs:
       - rust/format
       - rust/clippy
       - rust/test
+      - run:
+          name: Build examples
+          command: cargo build --examples
 
 workflows:
   version: 2
@@ -85,11 +90,11 @@ workflows:
         matrix:
           parameters:
             rust-version:
-            - "1.50.0"
             - "1.40.0"
+            - "1.50.0"
             - "1.54.0"
     - upload-coverage:
         rust-version: "1.54.0"
         requires:
           - build-and-test-1.54.0
-    - misc
+    - lint-check
