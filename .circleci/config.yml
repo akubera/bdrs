@@ -7,7 +7,6 @@ jobs:
     parameters:
       rust-version:
         type: string
-        default: "stable"
       debian-version:
         type: string
         default: "buster"
@@ -26,7 +25,13 @@ jobs:
       - run:
           name: Test
           command: cargo test
-  coverage:
+  upload-coverage:
+    parameters:
+      rust-version:
+        type: string
+      debian-version:
+        type: string
+        default: "buster"
     machine: true
     steps:
       - checkout
@@ -36,18 +41,24 @@ jobs:
               docker run
               --security-opt seccomp=unconfined
               -v "${PWD}:/home"
-              akubera/rust-codecov:1.54.0-buster
+              akubera/rust-codecov:<< parameters.rust-version >>-<< parameters.debian-version >>
               sh -c 'cargo test -q && kcov-rust && upload-kcov-results-to-codecov'
-       # - codecov/upload
 
 workflows:
   version: 2
   build-and-test:
-   jobs:
-     - build-and-test:
-         matrix:
-             parameters:
-                rust-version:
-                   - "1.53.0"
-                   - "1.54.0"
-  
+    jobs:
+    - build-and-test:
+        parameters:
+          rust-version: "1.34.0"
+          debian-version: "stretch"
+    - build-and-test:
+        matrix:
+          parameters:
+              rust-version:
+                - "1.40.0"
+                - "1.53.0"
+                - "1.54.0"
+    - upload-coverage:
+        parameters:
+          rust-version: "1.54.0"
